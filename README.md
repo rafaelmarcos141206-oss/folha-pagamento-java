@@ -53,8 +53,8 @@ Arquivos: `Funcionario.java` (CLT e cálculos tributários), `FuncionarioPJ.java
 | 3. PJ hora 50 e zero horas | Bruto 0,00; DAS 86,05; líquido −86,05 | Bruto 0,00; DAS 86,05; líquido −86,05 | Sim | — |
 | 4. INSS 8.000 → 10.500 → 12.000 | Aumenta até o teto; 10.500 e 12.000 = 988,09 | 921,51 → 988,09 → 988,09 | Sim | — |
 | 5. IRRF 5.000 e 6.000 | 5.000 isento (0,00); 6.000 redução parcial (385,10) | 0,00 e 385,10 | Sim | — |
-| 6. `calcularLiquido()` duas vezes | Mesmo valor nas duas chamadas | 4.973,39 e 4.973,39 | Sim | — |
-| 7. Ana recalculada após criar Bruno | Líquido de Ana continua 2.751,40 | 2.751,40 | Sim | — |
+| 6. `calcularLiquido()` duas vezes | Mesmo valor nas duas chamadas e bruto sem alteração | 4.973,39 e 4.973,39; bruto continua 6.000,00 | Sim | — |
+| 7. Ana recalculada após criar Bruno | Mesmos valores do início | Bruto 3.000,00; INSS 248,60; IRRF 0,00; FGTS 240,00; Líquido 2.751,40 | Sim | — |
 
 **Motivo dos resultados:**
 1. Os construtores validam nome, salário, valor da hora e horas e lançam `IllegalArgumentException` antes de o objeto existir.
@@ -77,7 +77,7 @@ O construtor garante que nenhum objeto nasce inválido: o nome precisa estar pre
 Porque o FGTS é um depósito feito pelo empregador numa conta do trabalhador, a mais do salário. Ele não é descontado do funcionário, então aparece só como informação e não entra em `calcularLiquido()`.
 
 **4. Qual método foi sobrescrito? O que acontece quando o cálculo de INSS chama esse método em um professor?**
-O método sobrescrito é `calcularBruto()` (em `FuncionarioPJ` e de novo em `Professor`). Quando `calcularINSS()` chama `calcularBruto()` num objeto `Professor`, o Java executa a versão do professor (polimorfismo / ligação dinâmica), ou seja, usa horas-aula × 4,5 × valor + DSR, e não o salário mensal. Assim os descontos herdados funcionam sem reescrever as fórmulas.
+O método sobrescrito é `calcularBruto()`, que ganhou uma versão própria em `FuncionarioPJ` e outra em `Professor` (com `@Override`). Quando `calcularINSS()` chama `calcularBruto()` em um objeto `Professor`, é executada a versão do `Professor`, e não a de `Funcionario`. Por isso o INSS do professor é calculado sobre aulas + DSR (5.250,00 no caso do Daniel), e não sobre o salário mensal, que nele é zero.
 
 **5. Por que um professor CLT herdar de `FuncionarioPJ` causa um problema de modelagem? Sugira algo melhor.**
-Herança significa "é um": dizer que `Professor` é um `FuncionarioPJ` é falso, pois o professor é CLT. A herança foi usada só para reaproveitar valor da hora e horas, e por isso foi preciso o construtor `protected` passando `pj = false`, o que confunde quem lê o código. Uma organização melhor seria criar uma classe intermediária neutra, como `FuncionarioHorista` (com valor da hora e horas), da qual herdariam `PrestadorPJ` e `Professor`; ou separar o regime numa estratégia própria (por exemplo, `RegimeCLT` e `RegimeMEI`) usada por composição, em vez de depender da hierarquia.
+Herança quer dizer "é um": com essa hierarquia, o professor "é um" `FuncionarioPJ`, o que é falso, porque ele é CLT. A herança foi usada só para reaproveitar o valor da hora e a quantidade de horas, e por isso foi preciso o construtor `protected` passando `pj = false`, o que confunde quem lê o código. Uma organização melhor seria criar uma classe intermediária com um nome neutro, como `FuncionarioHorista`, guardando o valor da hora e as horas; dela herdariam `FuncionarioPJ` e `Professor`, cada um com o seu regime.

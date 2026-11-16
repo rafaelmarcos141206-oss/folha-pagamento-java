@@ -32,6 +32,6 @@ public class FuncionarioPJ extends Funcionario {
 
     @Override
     public double calcularBruto() {
-        return arredondar(valorHora * horasTrabalhadas);
+        return valorHora * horasTrabalhadas;
     }
 }

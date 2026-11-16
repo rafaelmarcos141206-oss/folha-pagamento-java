@@ -26,10 +26,6 @@ public class Funcionario {
         return nome;
     }
 
-    public double getSalarioMensal() {
-        return salarioMensal;
-    }
-
     public boolean isPJ() {
         return pj;
     }
@@ -46,19 +42,36 @@ public class Funcionario {
         double bruto = calcularBruto();
         double inss = 0;
 
-        if (bruto > 0) {
-            inss += Math.min(bruto, 1621.00) * 0.075;
-        }
+        // Cada alíquota incide só sobre a parte do salário que cai na sua faixa.
+        // 1ª faixa: até 1.621,00 (7,5%)
         if (bruto > 1621.00) {
-            inss += (Math.min(bruto, 2902.84) - 1621.00) * 0.09;
-        }
-        if (bruto > 2902.84) {
-            inss += (Math.min(bruto, 4354.27) - 2902.84) * 0.12;
-        }
-        if (bruto > 4354.27) {
-            inss += (Math.min(bruto, 8475.55) - 4354.27) * 0.14;
+            inss += 1621.00 * 0.075;
+        } else {
+            inss += bruto * 0.075;
         }
 
+        // 2ª faixa: de 1.621,00 até 2.902,84 (9%)
+        if (bruto > 2902.84) {
+            inss += (2902.84 - 1621.00) * 0.09;
+        } else if (bruto > 1621.00) {
+            inss += (bruto - 1621.00) * 0.09;
+        }
+
+        // 3ª faixa: de 2.902,84 até 4.354,27 (12%)
+        if (bruto > 4354.27) {
+            inss += (4354.27 - 2902.84) * 0.12;
+        } else if (bruto > 2902.84) {
+            inss += (bruto - 2902.84) * 0.12;
+        }
+
+        // 4ª faixa: de 4.354,27 até 8.475,55 (14%); acima do teto não contribui mais
+        if (bruto > 8475.55) {
+            inss += (8475.55 - 4354.27) * 0.14;
+        } else if (bruto > 4354.27) {
+            inss += (bruto - 4354.27) * 0.14;
+        }
+
+        // Arredonda só o total, nunca cada faixa
         return arredondar(inss);
     }
 
@@ -69,9 +82,18 @@ public class Funcionario {
 
         double bruto = calcularBruto();
 
-        // 1. Base do IR: usa o MAIOR entre INSS e desconto simplificado (não soma)
-        double deducao = Math.max(calcularINSS(), 607.20);
-        double baseIR = Math.max(0, bruto - deducao);
+        // 1. Dedução: o MAIOR entre o INSS e o desconto simplificado (não somar os dois)
+        double inss = calcularINSS();
+        double deducao = 607.20;
+        if (inss > deducao) {
+            deducao = inss;
+        }
+
+        // Base do IR nunca fica abaixo de zero
+        double baseIR = bruto - deducao;
+        if (baseIR < 0) {
+            baseIR = 0;
+        }
 
         // 2. Tabela progressiva
         double aliquota;
@@ -94,20 +116,33 @@ public class Funcionario {
             parcelaDeduzir = 908.73;
         }
 
-        double impostoInicial = arredondar(Math.max(0, baseIR * aliquota - parcelaDeduzir));
+        // Imposto inicial nunca negativo, arredondado
+        double impostoInicial = baseIR * aliquota - parcelaDeduzir;
+        if (impostoInicial < 0) {
+            impostoInicial = 0;
+        }
+        impostoInicial = arredondar(impostoInicial);
 
-        // 3. Redução pela remuneração bruta
+        // 3. Redução calculada pela remuneração BRUTA
         double reducao;
         if (bruto <= 5000.00) {
-            reducao = impostoInicial; // IRRF final zero
+            reducao = impostoInicial; // até 5.000,00 o IRRF final é zero
         } else if (bruto <= 7350.00) {
-            reducao = arredondar(Math.max(0, 978.62 - 0.133145 * bruto));
+            reducao = 978.62 - 0.133145 * bruto;
+            if (reducao < 0) {
+                reducao = 0;
+            }
+            reducao = arredondar(reducao);
         } else {
-            reducao = 0;
+            reducao = 0; // acima de 7.350,00 não há redução
         }
 
-        // 4. IRRF final nunca negativo
-        return arredondar(Math.max(0, impostoInicial - reducao));
+        // 4. IRRF final nunca negativo, arredondado
+        double irrf = impostoInicial - reducao;
+        if (irrf < 0) {
+            irrf = 0;
+        }
+        return arredondar(irrf);
     }
 
     public double calcularFGTS() {

@@ -11,6 +11,6 @@ public class Professor extends FuncionarioPJ {
         double horasMensais = getHorasTrabalhadas() * 4.5;
         double remuneracaoAulas = getValorHora() * horasMensais;
         double dsr = remuneracaoAulas / 6.0;
-        return arredondar(remuneracaoAulas + dsr);
+        return remuneracaoAulas + dsr;
     }
 }

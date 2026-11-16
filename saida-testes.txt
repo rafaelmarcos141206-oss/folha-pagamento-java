@@ -3,86 +3,103 @@ Saída de 'java Main' — Rafael Marcos Santos Baiao — RA 1252211620727 — 13
 ----------------------------------------
 Nome: Ana
 Regime: CLT
-Salário Bruto: R$ 3000,00
+Bruto: R$ 3000,00
 INSS: R$ 248,60
 IRRF: R$ 0,00
 FGTS: R$ 240,00
-DAS-MEI: R$ 0,00
-Salário Líquido: R$ 2751,40
+DAS: R$ 0,00
+Líquido: R$ 2751,40
 ----------------------------------------
 
 ----------------------------------------
 Nome: Bruno
 Regime: CLT
-Salário Bruto: R$ 6000,00
+Bruto: R$ 6000,00
 INSS: R$ 641,51
 IRRF: R$ 385,10
 FGTS: R$ 480,00
-DAS-MEI: R$ 0,00
-Salário Líquido: R$ 4973,39
+DAS: R$ 0,00
+Líquido: R$ 4973,39
 ----------------------------------------
 
 ----------------------------------------
 Nome: Carla
 Regime: PJ
-Salário Bruto: R$ 6000,00
+Bruto: R$ 6000,00
 INSS: R$ 0,00
 IRRF: R$ 0,00
 FGTS: R$ 0,00
-DAS-MEI: R$ 86,05
-Salário Líquido: R$ 5913,95
+DAS: R$ 86,05
+Líquido: R$ 5913,95
 ----------------------------------------
 
 ----------------------------------------
 Nome: Daniel
 Regime: CLT
-Salário Bruto: R$ 5250,00
+Bruto: R$ 5250,00
 INSS: R$ 536,51
 IRRF: R$ 89,53
 FGTS: R$ 420,00
-DAS-MEI: R$ 0,00
-Salário Líquido: R$ 4623,96
+DAS: R$ 0,00
+Líquido: R$ 4623,96
 ----------------------------------------
 
 ----------------------------------------
 Nome: Elisa
 Regime: CLT
-Salário Bruto: R$ 10500,00
+Bruto: R$ 10500,00
 INSS: R$ 988,09
 IRRF: R$ 1707,05
 FGTS: R$ 840,00
-DAS-MEI: R$ 0,00
-Salário Líquido: R$ 7804,86
+DAS: R$ 0,00
+Líquido: R$ 7804,86
 ----------------------------------------
 
 ===== TESTES OBRIGATÓRIOS =====
-OK - Salário negativo: rejeitado (Salário inválido: não pode ser negativo.)
-OK - Valor hora negativo: rejeitado (Valor da hora inválido: não pode ser negativo.)
-OK - Horas negativas: rejeitado (Horas inválidas: não podem ser negativas.)
-OK - Nome vazio: rejeitado (Nome inválido: o nome deve ser preenchido.)
+
+Teste 1 (salário negativo): rejeitado - Salário inválido: não pode ser negativo.
+Teste 1 (valor da hora negativo): rejeitado - Valor da hora inválido: não pode ser negativo.
+Teste 1 (horas negativas): rejeitado - Horas inválidas: não podem ser negativas.
+Teste 1 (nome em branco): rejeitado - Nome inválido: o nome deve ser preenchido.
+
+Teste 2 (CLT com salário zero):
 ----------------------------------------
-Nome: CLT Zero
+Nome: CLT salário zero
 Regime: CLT
-Salário Bruto: R$ 0,00
+Bruto: R$ 0,00
 INSS: R$ 0,00
 IRRF: R$ 0,00
 FGTS: R$ 0,00
-DAS-MEI: R$ 0,00
-Salário Líquido: R$ 0,00
+DAS: R$ 0,00
+Líquido: R$ 0,00
 ----------------------------------------
 
+Teste 3 (PJ com zero horas):
 ----------------------------------------
-Nome: PJ Zero Horas
+Nome: PJ zero horas
 Regime: PJ
-Salário Bruto: R$ 0,00
+Bruto: R$ 0,00
 INSS: R$ 0,00
 IRRF: R$ 0,00
 FGTS: R$ 0,00
-DAS-MEI: R$ 86,05
-Salário Líquido: R$ -86,05
+DAS: R$ 86,05
+Líquido: R$ -86,05
 ----------------------------------------
 
-INSS 8.000: 921,51 | 10.500: 988,09 | 12.000: 988,09
-IRRF 5.000: 0,00 | 6.000: 385,10
-Líquido Bruno 2x: 4973,39 e 4973,39 -> OK
-Líquido Ana após Bruno: 2751,40
+Teste 4 (INSS): 8.000 = 921,51 | 10.500 = 988,09 | 12.000 = 988,09
+Teste 5 (IRRF): 5.000 = 0,00 | 6.000 = 385,10
+Teste 6 (líquido de Bruno duas vezes): 4973,39 e 4973,39, bruto continua 6000,00
+Teste 6: OK, o resultado não mudou
+
+Teste 7 (Ana recalculada depois de criar Bruno):
+----------------------------------------
+Nome: Ana
+Regime: CLT
+Bruto: R$ 3000,00
+INSS: R$ 248,60
+IRRF: R$ 0,00
+FGTS: R$ 240,00
+DAS: R$ 0,00
+Líquido: R$ 2751,40
+----------------------------------------
+
